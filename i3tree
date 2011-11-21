@@ -1,0 +1,56 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use AnyEvent::I3;
+use X11::Protocol;
+
+# get path to i3 socket by reading property of X11 root window
+my $x = X11::Protocol->new();
+my ( $value, $mtype, $format, $bytes_after ) =
+  $x->GetProperty( $x->root, $x->atom('I3_SOCKET_PATH'),
+    'AnyPropertyType', 0, -1, 0 );
+
+my $i3 = i3($value);
+$i3->connect->recv or die "Error connecting";
+
+# use number rather than constant to support older versions of anyevent::i3
+my $tree = $i3->message(4)->recv;
+
+sub display_node {
+    my ( $description, $depth ) = @_;
+    my $margin = "\t" x $depth;
+    print $margin . $description . "\n";
+    return $depth + 1;
+}
+
+sub walk_tree {
+    my ( $node, $depth ) = @_;
+
+    my $type        = $node->{'type'};
+    my $orientation = $node->{'orientation'};
+    my $name        = $node->{'name'};
+
+    if ( $type == 4 ) {
+        $depth = display_node( "Workspace $name ($orientation)", $depth );
+    }
+
+    if ( $type == 2 ) {
+        if ( $orientation eq "none" ) {
+            unless ( $name eq "content" or $name =~ "^i3bar" ) {
+                $depth = display_node( "Window $name", $depth );
+            }
+        }
+        else {
+            $depth = display_node( "Split ($orientation)", $depth );
+        }
+    }
+
+    foreach ( @{ $node->{'nodes'} } ) {
+        walk_tree( $_, $depth );
+    }
+}
+
+walk_tree( $tree, 0 );
+
