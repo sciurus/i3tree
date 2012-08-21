@@ -30,11 +30,12 @@ sub walk_tree {
 
     my $type        = $node->{'type'};
     my $orientation = $node->{'orientation'};
+    my $layout      = $node->{'layout'};
     my $name        = $node->{'name'};
 
     # 4 is type for workspace
     if ( $type == 4 ) {
-        $depth = display_node( "Workspace $name ($orientation)", $depth );
+        $depth = display_node( "Workspace $name ($layout - $orientation)", $depth );
     }
 
     # 2 is type for several kinds of containers
@@ -48,7 +49,7 @@ sub walk_tree {
         }
         # orientation, so definitely a split container
         else {
-            $depth = display_node( "Split ($orientation)", $depth );
+            $depth = display_node( "Split ($layout - $orientation)", $depth );
         }
     }
 
