@@ -1,29 +1,32 @@
 #!/usr/bin/env perl
 
+# use {{{
 use strict;
 use warnings;
-
+use v5.20;
 use AnyEvent::I3;
-use X11::Protocol;
+use Data::Dumper;
+# }}}
 
-# get path to i3 socket by reading property of X11 root window
-my $x = X11::Protocol->new();
-my ( $value, $mtype, $format, $bytes_after ) =
-  $x->GetProperty( $x->root, $x->atom('I3_SOCKET_PATH'),
-    'AnyPropertyType', 0, -1, 0 );
+# Variables {{{
 
-my $i3 = i3($value);
-$i3->connect->recv or die "Error connecting";
+# receive description of the tree
+my $tree = i3->get_tree->recv;
 
-# 4 is message type to receive description of the tree
-my $tree = $i3->message(4)->recv;
+# }}}
 
+walk_tree( $tree, 0 );
+
+# sub display_node {{{
 sub display_node {
     my ( $description, $depth ) = @_;
     my $margin = "\t" x $depth;
     print $margin . $description . "\n";
     return $depth + 1;
 }
+# }}}
+
+# sub walk_tree {{{
 
 sub walk_tree {
     my ( $node, $depth ) = @_;
@@ -33,13 +36,16 @@ sub walk_tree {
     my $layout      = $node->{'layout'};
     my $name        = $node->{'name'};
 
-    # 4 is type for workspace
-    if ( $type == 4 ) {
+	# get type and name, for debugging
+	# say "$type, $name";
+
+    # if "type" is workspace
+    if ( $type eq "workspace" ) {
         $depth = display_node( "Workspace $name ($layout - $orientation)", $depth );
     }
 
-    # 2 is type for several kinds of containers
-    if ( $type == 2 ) {
+    # if "type" is "con" (type for several kinds of containers)
+    if ( $type eq "con" ) {
         # no orientation, so probably a window
         if ( $orientation eq "none" ) {
             # filter out two possible non-windows
@@ -58,5 +64,4 @@ sub walk_tree {
     }
 }
 
-walk_tree( $tree, 0 );
-
+# }}}
