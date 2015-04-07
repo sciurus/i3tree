@@ -1,31 +1,24 @@
 #!/usr/bin/env perl
 
-# use {{{
 use strict;
 use warnings;
 use v5.14;
 use AnyEvent::I3;
-# }}}
 
-# Variables {{{
 
 # receive description of the tree
 my $tree = i3->get_tree->recv;
 
-# }}}
 
 walk_tree( $tree, 0 );
 
-# sub display_node {{{
 sub display_node {
     my ( $description, $depth ) = @_;
     my $margin = "\t" x $depth;
     print $margin . $description . "\n";
     return $depth + 1;
 }
-# }}}
 
-# sub walk_tree {{{
 
 sub walk_tree {
     my ( $node, $depth ) = @_;
@@ -63,4 +56,3 @@ sub walk_tree {
     }
 }
 
-# }}}
