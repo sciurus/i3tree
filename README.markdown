@@ -2,10 +2,9 @@
 i3tree is a program I wrote to help myself adjust to version 4 of the i3 tiling window manager. It displays the containers your windows are children of and what layout those containers are using.
 
 ## INSTALLATION
-i3tree requires an installation of the i3 window manager, perl, and the following two perl modules.
+i3tree requires an installation of the i3 window manager, perl, and the following perl module.
 
   * AnyEvent::I3
-  * X11::Protocol
 
 ## USAGE
 Just run it.
