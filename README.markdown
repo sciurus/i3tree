@@ -21,9 +21,16 @@ Just run it.
             Window foo@bar: ~
             Window foo@bar: ~
 
-## LIMITATIONS
-You have to start i3tree from a running terminal. It would be neat if i3tree could be invoked from a keyboard shortcut and draw to a floating window.
+## CONVENIENCE
+You could either start i3tree from a running terminal, or launch it
+inside a floating window.  Here's the configuration needed:
 
+```
+for_window [title="^i3tree$"] floating enable
+bindsym $mod+t exec xterm -hold -title i3tree -e ~/path/to/i3tree
+```
+
+## LIMITATIONS
 i3tree shows containers from all workspaces. It could be useful to optionally limit this to only the current workspace.
 
 ## THANKS
