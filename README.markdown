@@ -15,7 +15,7 @@ Just run it.
 
 ## Examples
 
-```shell
+```console
 $ tabs 4
 $ i3tree
   Workspace 1 (horizontal)
