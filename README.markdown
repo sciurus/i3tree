@@ -16,6 +16,7 @@ Just run it.
 ## Examples
 
 ```shell
+$ tabs 4
 $ i3tree
   Workspace 1 (horizontal)
       Window foo@bar: ~
@@ -28,6 +29,8 @@ $ i3tree
 ```
 
 `*` indicates the currently focused container.
+
+In POSIX-compliant terminals, use [`tabs`](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/tabs.html) to adjust indentation width.
 
 ## Convenience
 
